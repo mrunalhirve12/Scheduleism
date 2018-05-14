@@ -40,5 +40,12 @@ class Process (object):
 	def launchProcess(self):
 		return self.functionality(self.id, self.priority, self.start_time, self.end_time, self.state)
 
-process = Process(1, "High", 0, 5, 0, print("hello"))
+def readFile(file):
+	with open(file, 'r') as f:
+		print(f.read())
+
+# an example usage, it can be substituted with other function calls. - NEEDS END TO END TESTING. 
+process = Process(1, "High", 0, 5, 0, readFile('carseats.csv'))
+
+
 

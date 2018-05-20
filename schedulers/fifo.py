@@ -24,6 +24,18 @@ class FIFO():
     #==============================================
     def __init__(self):
         self.runQueue = deque([])
+
+    # reorders process list based on arrival time for the scheduler
+    # to pick up a single process. 
+
+    def procSort(self, proc_list):
+        for idx in range(0, len(proc_list) - 1):
+            if proc_list[idx].get_startTime() > proc_list[idx + 1].get_startTime():
+                temp = proc_list[idx]
+                proc_list[idx] = proc_list[idx + 1]
+                proc_list[idx + 1] = temp
+        return proc_list # updated list. 
+
     
     #==============================================
     #Add a process to the end of the run queue

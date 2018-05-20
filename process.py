@@ -1,3 +1,7 @@
+import function as functions
+import pdb, re
+
+
 class Process (object):
 
 	def __init__(self, pid, priority, start_time, end_time, timer, functionTodo):
@@ -11,9 +15,8 @@ class Process (object):
 		# metrics 
 		self.start_time = 0
 		self.end_time = 0
-		self.timer = 0
+		self.counter = 0
 
-		# function that a process will execute
 		self.functionality = functionTodo
 		# result from executing the above function
 		self.results = None
@@ -45,26 +48,23 @@ class Process (object):
 	def set_state(self, state):
 		self.state[state] = True
 
-	# TODO. 
+	def incrementCounter(self):
+		self.counter += 1
+	def getProcessRuntime (self):
+		return self.counter
+
 	def launchProcess(self):
-		return self.functionality(self.id, self.priority, self.start_time, self.end_time, self.state)
+		return self.functionality()
 
-# Example function calls associated to a process object. Need to add timers to capture metrics. 
-def readFile(file):
-	with open(file, 'r') as f:
-		print(f.read())
 
-# add = lambda x,y : x + y
-def add(a,b):
-	print(a + b)
 
 # an example usage, it can be substituted with other function calls. - NEEDS END TO END TESTING. 
-process = Process(1, "High", 0, 5, 0, add(1, 3))
-print(process)
+processMM = Process(1, "High", 0, 5, 0, functions.matmult)
+processAdd = Process(2, "Low", 2, 5, 0, functions.sum)
 
-process.set_state("running")
-# this is the example for overriding __str__ function 
-print(process)
+
+procQueue = list() 		# waiting list
+procQueue.extend((processMM, processAdd)) 	# adding processes to the waiting list
 
 
 

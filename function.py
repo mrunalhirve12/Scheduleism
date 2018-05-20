@@ -2,6 +2,8 @@
 Complex functions to run in a scheduler
 """
 
+import numpy
+
 def matmult():
     # Function to multiply  two matrix and store results
     X = [[2, 8, 3], [5, 9, 6], [7, 8, 9]]
@@ -31,7 +33,8 @@ def readandwrite():
 """ 
 Simple functions to run in a scheduler 
 """
-def sum(x, y):
+def sum():
+    x, y = numpy.random.randint(10), numpy.random.randint(1000)
     # Function to add two numbers and print them
     sum = x + y
     sentence = 'The sum of {} and {} is {}.'.format(x, y, sum)

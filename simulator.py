@@ -31,7 +31,9 @@ class Simulator:
 # Create array of different processes to be used by each scheduler
 processes = []
 # TODO: create list of different processes
-processes.append(process.Process(1, "High", 0, 5, 0, 1))
+processes.append(process.Process(1, "High", 0, 5, 0, functions.matmult))
+processes.append(process.Process(2, "Low", 2, 5, 0, functions.sum))
+processes.append(process.Process(3, "Medium", 1, 5, 0, functions.sum))
 
 # Create simulators for each scheduler
 fifo = Simulator(processes, "fifo")

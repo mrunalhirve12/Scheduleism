@@ -5,16 +5,15 @@ from defines import BLOCKED
 
 """
 #==================================================
-First In First Out
+Round Robin Scheduler
 
-The idea behind this scheduling algorithm is that
-tasks are scheduled in the order that they are
-added in the queue. The process is executed till it
-is completed or it's given up the CPU. The downside
-with this is that this algorithm is nonpreemptive,
-which means that short processes which are in the 
-back of queue will have to wait for long process at
-front to finish. 
+The idea behind this scheduler is to assign a fixed
+time slot for each process, called a quantum. The 
+processes are executed in a cyclic way. Once a 
+process is executed for a given time period, it's 
+preempted and the next process executes for its 
+time period. Context switching is used to save the
+states of preempted processes.
 #==================================================
 """
 class RR():

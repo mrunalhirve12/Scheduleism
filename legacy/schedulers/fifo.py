@@ -1,8 +1,5 @@
 from collections import deque
-from defines import COMPLETE
-from defines import INCOMPLETE
-from defines import BLOCKED
-
+from process import Process
 """
 #==================================================
 First In First Out
@@ -26,12 +23,20 @@ class FIFO():
     #   None
     #==============================================
     def __init__(self):
-        self.readyList = deque([])
-        self.blockedList = deque([])
+        self.runQueue = deque([])
 
     # reorders process list based on arrival time for the scheduler
     # to pick up a single process. 
 
+    def procSort(self, proc_list):
+        for idx in range(0, len(proc_list) - 1):
+            if proc_list[idx].get_startTime() > proc_list[idx + 1].get_startTime():
+                temp = proc_list[idx]
+                proc_list[idx] = proc_list[idx + 1]
+                proc_list[idx + 1] = temp
+        return proc_list # updated list. 
+
+    
     #==============================================
     #Add a process to the end of the run queue
     #Param:
@@ -40,7 +45,7 @@ class FIFO():
     #   None
     #==============================================
     def addProcess(self, process):
-        self.readyList.append(process)
+        self.runQueue.append(process)
     
     #==============================================
     #Get the next process on the queue
@@ -52,7 +57,7 @@ class FIFO():
     #==============================================
     def getNextProcess(self):
         try:
-            return self.readyList.popleft()
+            return self.runQueue.popleft()
         except IndexError:
             return None
     
@@ -63,25 +68,11 @@ class FIFO():
     #Return:
     #   None
     #==============================================
-    def get_next(self, curProc):
-        if curProc is not None and curProc.get_status() == INCOMPLETE:
-            return curProc
-        elif curProc is not None and curProc.get_status() == BLOCKED:
-            self.blockedList.append(curProc)
-        elif curProc is not None and curProc.get_status() == COMPLETE:
-            curProc = None
-        proc = self.getNextProcess()
-        return proc
+    def run(self):
+        #While there's process in the queue
+        while self.runQueue:
+            #Get process to run
+            toRun = self.getNextProcess()
 
-    # true if all lists empty
-    def empty(self):
-        if len(self.readyList) == 0 and len(self.blockedList) == 0:
-            return True
-        return False
-
-    # move everything from blocked list to ready list
-    def check_blocked(self):
-        while len(self.blockedList) > 0:
-            proc = self.blockedList.popleft()
-            proc.set_status(INCOMPLETE)
-            self.readyList.append(proc)
+            #TODO: Run process till completion
+            toRun.launchProcess()

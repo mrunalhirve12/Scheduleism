@@ -1,92 +1,66 @@
-import function as functions
-import schedulers.fifo as fifo
-
+import copy
+from defines import INCOMPLETE
+from defines import COMPLETE
+from defines import BLOCKED
 
 class Process (object):
+    def __init__(self, pid, priority, completion_time, blockList):
 
-	def __init__(self, pid, priority, start_time, end_time, timer, functionTodo):
+        self.pid = pid
+        self.priority = priority
+        self.start_time = -1
+        self.completion_time = completion_time
+        self.counter = 0
+        self.status = INCOMPLETE
 
-		self.id = pid
-		self.priority = priority
+        self.blockList = copy.deepcopy(blockList)
+        self.block_idx = 0
 
-		# flags state dictionary
-		self.state = {'ready': False, 'blocked': False, 'running': False}
+    def getPid(self):
+        return self.pid
 
-		# metrics 
-		self.start_time = start_time
-		self.end_time = end_time
-		self.counter = 0
+    def setPid(self, pid):
+        self.pid = pid
 
-		self.functionality = functionTodo
-		# result from executing the above function
-		self.results = None # TODO
+    def getPriority(self):
+        return self.priority
 
-	# overriding the object printer for ease. Just do print(object) it spits out everything associated :)
-	def __str__(self):
-		return "Process ID - {}, Process priority - {}, Process State - {}, Start time - {}, End time - {}".format(self.id, self.priority, self.state, self.start_time, self.end_time)
+    def setPriority(self, p):
+        self.priority = p
 
-	# Getters and setters for the process object. 
+    def get_startTime(self):
+        return self.start_time
 
-	def getPid(self):
-		return self.pid
+    def set_startTime(self, time):
+        self.start_time = time
 
-	def setPid(self, pid):
-		self.pid = pid
+    def getProcessRuntime (self):
+        return self.counter
 
-	def getPriority(self):
-		return self.priority
+    def set_status(self, s):
+        self.status = s
 
-	def setPriority(self, p):
-		self.priority = p
+    def get_status(self):
+        return self.status
 
-	def get_startTime(self):
-		return self.start_time
+    def print_status(self, time):
+        print("time: ",time," pid: ",self.pid," priority: ",self.priority," start_time: ",self.start_time," completion_time: ",self.completion_time," counter: ",self.counter," status: ",self.status," block_idx: ",self.block_idx)
 
-	def set_startTime(self, time):
-		self.start_time = time
+    def run(self, sysTime):
+        self.counter += 1
 
-	def set_endTime(self, time):
-		self.end_time = time
+        if self.start_time == -1:
+            self.start_time = sysTime
 
-	def set_state(self, state):
-		self.state[state] = True
-
-	def incrementCounter(self):
-		self.counter += 1
-	def getProcessRuntime (self):
-		return self.counter
-
-	def launchProcess(self):
-		return self.functionality()
-
-
-
-
-
-# an example usage, it can be substituted with other function calls. - NEEDS END TO END TESTING. 
-processMM = Process(1, "High", 0, 5, 0, functions.matmult)
-processAdd = Process(2, "Low", 2, 5, 0, functions.sum)
-processSample = Process(3, "Medium", 1, 5, 0, functions.sum)
-
-
-
-procQueue = list() 		# waiting list
-procQueue.extend((processMM, processAdd, processSample)) 	# adding processes to the waiting list
-# print(procQueue)
-
-
-# keeping track of global clock. 
-localCounter = 1
-
-# reordering processes to run FIFO
-scheduler = fifo.FIFO()
-scheduler.procSort(procQueue)
-localCounter += 1
-
-# run process in order. 
-for process in procQueue:
-	# keeping track of process counter
-	process.incrementCounter()
-	process.launchProcess()
-
-
+        if self.block_idx < len(self.blockList) and self.blockList[self.block_idx] <= self.counter:
+            self.block_idx += 1
+            self.status = BLOCKED
+            print("BLOCKED:   ",self.getPid()," at ",sysTime)
+            return BLOCKED
+        elif self.counter == self.completion_time:
+            print("COMPLETED: ",self.getPid()," at ",sysTime)
+            self.status = COMPLETE
+            return COMPLETE
+        else:
+            self.status = INCOMPLETE
+            return INCOMPLETE

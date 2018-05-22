@@ -32,22 +32,16 @@ timerInterrupt = int(sys.argv[2])
 systemTime = 0
 procTime = 0
 
-#process queue and order in which to add
+# process queue in the order in which to add
 processQ = deque([])
-add_idx = 0
-add_timing = [] 
 
-# Add a process to processQ AND add the general systemTime value this process
-# should be added into the simulation to add_timing
-processQ.append(process.Process(1, "High", 20, [5,11]))
-add_timing.append(0)
-processQ.append(process.Process(2, "Low", 20, []))
-add_timing.append(10)
+# Add a process to processQ with a process id, priority, time for completion,
+# and time to start the process relative to systemTime
+# Note: must add processes in sorted order by start time
+processQ.append(process.Process(1, "High", 20, 0))
+processQ.append(process.Process(2, "Low", 20, 11))
 
 curProc = None
-scheduler.addProcess(processQ.popleft()) # start with one process ready to go in scheduler
-add_idx += 1
-status = INCOMPLETE
 
 while True:
     # detect conclusion of simulation
@@ -60,10 +54,14 @@ while True:
     elif procTime == timerInterrupt or curProc is None or \
         (curProc is not None and curProc.get_status() == COMPLETE):
 
+        # TODO: add function that determines if it's time to add a new process
         # check if it's time to add a new process to simulation
-        if add_idx < len(add_timing) and add_timing[add_idx] <= systemTime \
-           and len(processQ) > 0:
-            add_idx += 1
+        addProcTime = systemTime+1
+        if len(processQ) > 0:
+            nextProc = processQ.popleft()
+            addProcTime = nextProc.get_startTime()
+            processQ.appendleft(nextProc)
+        if addProcTime <= systemTime:
             proc = processQ.popleft()
             print("NEW PROC:  ",proc.getPid()," at ",systemTime)
             scheduler.addProcess(proc)
@@ -71,20 +69,15 @@ while True:
         # run the scheduler
         curProc = scheduler.get_next(curProc)
 
-        # print context for next CPU cycle
-        if curProc is not None:
-            print("NEW CTXT:  ",curProc.getPid()," at ",systemTime)
-        else:
-            print("NEW CTXT:   0  at ",systemTime)
         procTime = 0
 
     # simulated user space execution
     if curProc is not None:
         print("EXEC:      ",curProc.getPid()," at ",systemTime)
-        status = curProc.run(systemTime)
+        curProc.run(systemTime)
         procTime += 1
     else:
-        print("IDLE:      ",systemTime)
+        print("EXEC:       0  at ",systemTime)
         procTime += 1
 
     # increment simulated hardware counters

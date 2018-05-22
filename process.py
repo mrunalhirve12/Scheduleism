@@ -4,17 +4,14 @@ from defines import COMPLETE
 from defines import BLOCKED
 
 class Process (object):
-    def __init__(self, pid, priority, completion_time, blockList):
+    def __init__(self, pid, priority, completion_time, start_time):
 
         self.pid = pid
         self.priority = priority
-        self.start_time = -1
+        self.start_time = start_time
         self.completion_time = completion_time
         self.counter = 0
         self.status = INCOMPLETE
-
-        self.blockList = copy.deepcopy(blockList)
-        self.block_idx = 0
 
     def getPid(self):
         return self.pid
@@ -44,19 +41,13 @@ class Process (object):
         return self.status
 
     def print_status(self, time):
-        print("time: ",time," pid: ",self.pid," priority: ",self.priority," start_time: ",self.start_time," completion_time: ",self.completion_time," counter: ",self.counter," status: ",self.status," block_idx: ",self.block_idx)
+        print("time: ",time," pid: ",self.pid," priority: ",self.priority," start_time: ",self.start_time," completion_time: ",self.completion_time," counter: ",self.counter," status: ",self.status)
 
     def run(self, sysTime):
-        self.counter += 1
-
-        if self.start_time == -1:
+        if self.counter == 0:
             self.start_time = sysTime
 
-#BLOCKED        if self.block_idx < len(self.blockList) and self.blockList[self.block_idx] <= self.counter:
-#BLOCKED            self.block_idx += 1
-#BLOCKED            self.status = BLOCKED
-#BLOCKED            print("BLOCKED:   ",self.getPid()," at ",sysTime)
-#BLOCKED            return BLOCKED
+        self.counter += 1
         if self.counter == self.completion_time:
             print("COMPLETED: ",self.getPid()," at ",sysTime)
             self.status = COMPLETE

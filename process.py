@@ -52,12 +52,12 @@ class Process (object):
         if self.start_time == -1:
             self.start_time = sysTime
 
-        if self.block_idx < len(self.blockList) and self.blockList[self.block_idx] <= self.counter:
-            self.block_idx += 1
-            self.status = BLOCKED
-            print("BLOCKED:   ",self.getPid()," at ",sysTime)
-            return BLOCKED
-        elif self.counter == self.completion_time:
+#BLOCKED        if self.block_idx < len(self.blockList) and self.blockList[self.block_idx] <= self.counter:
+#BLOCKED            self.block_idx += 1
+#BLOCKED            self.status = BLOCKED
+#BLOCKED            print("BLOCKED:   ",self.getPid()," at ",sysTime)
+#BLOCKED            return BLOCKED
+        if self.counter == self.completion_time:
             print("COMPLETED: ",self.getPid()," at ",sysTime)
             self.status = COMPLETE
             return COMPLETE

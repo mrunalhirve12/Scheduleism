@@ -16,8 +16,6 @@ from schedulers import round_robin
 
 from defines import COMPLETE
 from defines import INCOMPLETE
-from defines import BLOCKED
-
 
 if sys.argv[1] == "fifo":
     print("SCHEDULER: FIFO")
@@ -60,9 +58,8 @@ while True:
     # simulated kernel space execution
     # entered via timer interrupt, process blocking, or no user process running
     elif procTime == timerInterrupt or curProc is None or \
-        (curProc is not None and (curProc.get_status() == BLOCKED or curProc.get_status() == COMPLETE)):
+        (curProc is not None and curProc.get_status() == COMPLETE):
 
-        scheduler.check_blocked() # unblock all processes
         # check if it's time to add a new process to simulation
         if add_idx < len(add_timing) and add_timing[add_idx] <= systemTime \
            and len(processQ) > 0:

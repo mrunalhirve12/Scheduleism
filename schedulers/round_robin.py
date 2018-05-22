@@ -66,8 +66,8 @@ class RR():
     def get_next(self, curProc):
         if curProc is not None and curProc.get_status() == INCOMPLETE:
             self.readyList.append(curProc)
-        elif curProc is not None and curProc.get_status() == BLOCKED:
-            self.blockedList.append(curProc)
+#BLOCKED        elif curProc is not None and curProc.get_status() == BLOCKED:
+#BLOCKED            self.blockedList.append(curProc)
         elif curProc is not None and curProc.get_status() == COMPLETE:
             curProc = None
         proc = self.getNextProcess()

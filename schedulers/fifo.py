@@ -66,8 +66,8 @@ class FIFO():
     def get_next(self, curProc):
         if curProc is not None and curProc.get_status() == INCOMPLETE:
             return curProc
-        elif curProc is not None and curProc.get_status() == BLOCKED:
-            self.blockedList.append(curProc)
+        #elif curProc is not None and curProc.get_status() == BLOCKED:
+        #    self.blockedList.append(curProc)
         elif curProc is not None and curProc.get_status() == COMPLETE:
             curProc = None
         proc = self.getNextProcess()

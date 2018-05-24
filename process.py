@@ -13,6 +13,9 @@ class Process (object):
         self.counter = 0
         self.status = INCOMPLETE
 
+    def __repr__(self):
+        return '{pid} {priority} {start} {end}'.format(pid=self.pid, priority=self.priority, start=self.start_time, end=self.completion_time)
+
     def getPid(self):
         return self.pid
 

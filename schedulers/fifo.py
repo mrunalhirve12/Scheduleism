@@ -1,7 +1,7 @@
 from collections import deque
+from schedulers import base
 from defines import COMPLETE
 from defines import INCOMPLETE
-from defines import BLOCKED
 
 """
 #==================================================
@@ -17,21 +17,33 @@ back of queue will have to wait for long process at
 front to finish. 
 #==================================================
 """
-class FIFO():
+
+class FIFO(base.BaseScheduler):
     #==============================================
     #Intialize the run queue for FIFO
     #Params:
-    #   None
+    #   processQ = Deque of processes to run
+    #   timerInterrupt = Allows scheduler to check
+    #                    on running process and to
+    #                    make decisions
     #Return:
     #   None
     #==============================================
-    def __init__(self):
+    def __init__(self, processQ, timerInterrupt):
+        super().__init__(processQ, timerInterrupt)
         self.readyList = deque([])
-        self.blockedList = deque([])
 
-    # reorders process list based on arrival time for the scheduler
-    # to pick up a single process. 
-
+    #==============================================
+    #Checks to see if the queue is empty
+    #Params:
+    #   None
+    #Return:
+    #   Boolean indiciating if queue is empty or
+    #   not
+    #==============================================
+    def empty(self):
+        return len(self.readyList) == 0
+    
     #==============================================
     #Add a process to the end of the run queue
     #Param:
@@ -50,38 +62,27 @@ class FIFO():
     #   Next process on the queue
     #   None if no process in queue
     #==============================================
-    def getNextProcess(self):
+    def removeProcess(self):
         try:
             return self.readyList.popleft()
         except IndexError:
             return None
     
     #==============================================
-    #Run the scheduler through all the processes
+    #Get the next process for the scheduler to run.
+    #This implements the scheduler heuristics
     #Params:
-    #   None
+    #   curProc = Current process that's running on
+    #             scheduler
     #Return:
-    #   None
+    #   curProc = see Params section
+    #   OR
+    #   Next process in the queue via call to 
+    #   removeProcess()
     #==============================================
-    def get_next(self, curProc):
+    def getNext(self, curProc):
         if curProc is not None and curProc.get_status() == INCOMPLETE:
             return curProc
-        #elif curProc is not None and curProc.get_status() == BLOCKED:
-        #    self.blockedList.append(curProc)
         elif curProc is not None and curProc.get_status() == COMPLETE:
             curProc = None
-        proc = self.getNextProcess()
-        return proc
-
-    # true if all lists empty
-    def empty(self):
-        if len(self.readyList) == 0 and len(self.blockedList) == 0:
-            return True
-        return False
-
-    # move everything from blocked list to ready list
-    def check_blocked(self):
-        while len(self.blockedList) > 0:
-            proc = self.blockedList.popleft()
-            proc.set_status(INCOMPLETE)
-            self.readyList.append(proc)
+        return self.removeProcess()

@@ -52,27 +52,61 @@ class Node:
             return 0
         return sum([int(self.left.color != NIL), int(self.right.color != NIL)])
     
+    """
     #=========================================================
     # Added functionality to interact with node's queue
     #=========================================================
+    """
+    #=======================================
+    #Add process to the node's queue
+    #Params:
+    #   process = process to be added
+    #Return:
+    #   None
+    #=======================================
     def addProcess(self, process):
         self.queue.append(process)
     
+    #=======================================
+    #Get next process on the queue
+    #Params:
+    #   None
+    #Return:
+    #   process = the next process in queue
+    #   OR
+    #   None
+    #=======================================
     def getProcess(self):
         try:
             return self.queue.popleft()
         except IndexError:
             return None
     
+    #=======================================
+    #Check to make sure that there's no
+    #processes left in the queue
+    #Params:
+    #   None
+    #Return:
+    #   Boolean indicating whether there's
+    #   processes in the queue or not
+    #=======================================
     def isQueueEmpty(self) -> bool:
         if self.queue:
             return False
         else:
             return True
 
+    #=======================================
+    #Print the elements in the queue as a
+    #list
+    #Params:
+    #   None
+    #Return:
+    #   None
+    #=======================================
     def printQueue(self):
         print(list(self.queue))
-
 
 class RedBlackTree:
     # every node has null nodes as children initially, create one such object for easy management
@@ -543,16 +577,23 @@ class RedBlackTree:
             direction = 'R'
         return sibling, direction
     
+    """
     #===================================================================
     #The functions below are ones that were added for the OS project
     #===================================================================
-   
+    """
     #=======================================
-    # Add process to red black tree
+    #Add process to red black tree based on
+    #the process counter
+    #Params:
+    #   process = process to be added to 
+    #             red black tree
+    #Return:
+    #   None
     #=======================================
     def addProcess(self, process):
         #Get execution time
-        runTime = process.completion_time - process.start_time
+        runTime = process.getProcessRuntime()
 
         #See if node with that time exists in tree
         node_to_add = self.find_node(runTime)
@@ -571,7 +612,14 @@ class RedBlackTree:
             node_to_add.addProcess(process)
     
     #=======================================
-    # Find node with smallest execution time
+    #Find node with smallest execution time
+    #Params:
+    #   None
+    #Return:
+    #   node = node with smallest execution
+    #          time
+    #   OR
+    #   None
     #=======================================
     def getMinimum(self):
         #No root, so there's no nodes in tree
@@ -599,23 +647,41 @@ class RedBlackTree:
         return find_floor(self.root)
 
     #=======================================
-    # Get next minimum process
+    #Get next process to run that has the 
+    #minimum amount in execution time
+    #Params:
+    #   None
+    #Return:
+    #   process = the process to run next in
+    #             CFS
+    #   OR
+    #   None
     #=======================================
     def getProcess(self):
         #Find the node with the smallest execution time
         node = self.getMinimum()
 
-        #Pop the process from its queue
-        process = node.getProcess()
+        if node is not None:
+            #Pop the process from its queue
+            process = node.getProcess()
 
-        #If the result of the pop causes the queue to be empty, remove it from the tree
-        if node.isQueueEmpty():
-            self.remove(node.time)
-        
-        #Return the process
-        return process
+            #If the result of the pop causes the queue to be empty, remove it from the tree
+            if node.isQueueEmpty():
+                self.remove(node.time)
+            
+            #Return the process
+            return process
+        else:
+            return None
 
-    #Display function
+    #=======================================
+    #Display the red black tree. For testing
+    #purposes
+    #Params:
+    #   None
+    #Return:
+    #   None
+    #=======================================
     def display(self):
         def inner_find(root):
             if root is None or root == self.NIL_LEAF:
@@ -626,4 +692,3 @@ class RedBlackTree:
                 inner_find(root.right)
 
         inner_find(self.root)
-

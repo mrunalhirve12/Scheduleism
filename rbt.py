@@ -52,7 +52,9 @@ class Node:
             return 0
         return sum([int(self.left.color != NIL), int(self.right.color != NIL)])
     
-    #Added functionality to add and get process with same execution time
+    #=========================================================
+    # Added functionality to interact with node's queue
+    #=========================================================
     def addProcess(self, process):
         self.queue.append(process)
     
@@ -62,6 +64,12 @@ class Node:
         except IndexError:
             return None
     
+    def isQueueEmpty(self) -> bool:
+        if self.queue:
+            return False
+        else:
+            return True
+
     def printQueue(self):
         print(list(self.queue))
 
@@ -101,17 +109,6 @@ class RedBlackTree:
         self._try_rebalance(new_node)
         self.count += 1
 
-    #Add process to red black tree
-    def addProcess(self, process):
-        runTime = process.completion_time - process.start_time
-        node_to_add = self.find_node(runTime)
-        if node_to_add is None:
-            self.add(runTime) #Create the node
-            new_node = self.find_node(runTime)
-            new_node.addProcess(process)
-        else:
-            node_to_add.addProcess(process)
-    
     def remove(self, time):
         """
         Try to get a node with 0 or 1 children.
@@ -164,10 +161,9 @@ class RedBlackTree:
         return last_found_val
 
     def floor(self, time) -> int or None:
-        """
-        Given a time, return the closest time that is equal or less than it,
-        returning None when no such exists
-        """
+        #Given a time, return the closest time that is equal or less than it,
+        #returning None when no such exists
+        
         if self.root is None: return None
         last_found_val = None if self.root.time > time else self.root.time
 
@@ -179,7 +175,7 @@ class RedBlackTree:
                 last_found_val = node.time
                 return node.time
             elif node.time < time:
-                # this node is smaller, save its time and go right, trying to find a cloer one
+                # this node is smaller, save its time and go right, trying to find a closer one
                 last_found_val = node.time
 
                 return find_floor(node.right)
@@ -188,7 +184,7 @@ class RedBlackTree:
 
         find_floor(self.root)
         return last_found_val
-
+    
     def _remove(self, node):
         """
         Receives a node with 0 or 1 children (typically some sort of successor)
@@ -547,6 +543,79 @@ class RedBlackTree:
             direction = 'R'
         return sibling, direction
     
+    #===================================================================
+    #The functions below are ones that were added for the OS project
+    #===================================================================
+   
+    #=======================================
+    # Add process to red black tree
+    #=======================================
+    def addProcess(self, process):
+        #Get execution time
+        runTime = process.completion_time - process.start_time
+
+        #See if node with that time exists in tree
+        node_to_add = self.find_node(runTime)
+
+        if node_to_add is None:
+            #If not, create the node
+            self.add(runTime)
+
+            #Find the node in the tree
+            new_node = self.find_node(runTime)
+
+            #Add the process to its queue
+            new_node.addProcess(process)
+        else:
+            #Node exists, so add the process to its queue
+            node_to_add.addProcess(process)
+    
+    #=======================================
+    # Find node with smallest execution time
+    #=======================================
+    def getMinimum(self):
+        #No root, so there's no nodes in tree
+        if self.root is None: 
+            return None
+
+        #Inner function to find node with smallest execution time
+        def find_floor(node):
+            #If node is leaf, return None
+            if node == self.NIL_LEAF:
+                return None
+            
+            #If the left node is a leaf, return the current node
+            if node.left == self.NIL_LEAF:
+                return node
+            
+            #Otherwise, traverse the left side of the tree
+            elif node.left != self.NIL_LEAF:
+                return find_floor(node.left)
+            
+            #Traverse the right side of the tree
+            else:
+                return find_floor(node.right)
+
+        return find_floor(self.root)
+
+    #=======================================
+    # Get next minimum process
+    #=======================================
+    def getProcess(self):
+        #Find the node with the smallest execution time
+        node = self.getMinimum()
+
+        #Pop the process from its queue
+        process = node.getProcess()
+
+        #If the result of the pop causes the queue to be empty, remove it from the tree
+        if node.isQueueEmpty():
+            self.remove(node.time)
+        
+        #Return the process
+        return process
+
+    #Display function
     def display(self):
         def inner_find(root):
             if root is None or root == self.NIL_LEAF:

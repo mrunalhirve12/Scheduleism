@@ -95,6 +95,7 @@ class BaseScheduler(ABC):
             if addProcTime <= self.systemTime:
                 proc = self.processQ.popleft()
                 print("NEW PROC:  ",proc.getPid()," at ",self.systemTime)
+                proc.set_arrivalTime(self.systemTime)
                 self.addProcess(proc)
 
         prevProc = None

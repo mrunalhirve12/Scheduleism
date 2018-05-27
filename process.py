@@ -18,7 +18,7 @@ class Process (object):
         self.status = INCOMPLETE
 
     def __repr__(self):
-        return '{pid} {priority} {start} {end}'.format(pid=self.pid, priority=self.priority, start=self.start_time, end=self.burst_time)
+        return '{pid} {priority} {arrival} {start} {end} {burst} {turnaround} {wait}'.format(pid=self.pid, priority=self.priority, arrival=self.arrival_time, start=self.start_time, end=self.completion_time, burst=self.burst_time, wait=self.waiting_time, turnaround=self.turnaround_time)
 
     def getPid(self):
         return self.pid
@@ -53,8 +53,8 @@ class Process (object):
     def get_arrivalTime(self):
         return self.arrival_time
 
-    def print_status(self, time):
-        print("time: ",time," status: ",self.status," pid: ",self.pid," priority: ",self.priority," arrival_time: ",self.arrival_time,\
+    def print_status(self):
+        print("status: ",self.status," pid: ",self.pid," priority: ",self.priority," arrival_time: ",self.arrival_time,\
               " start_time: ",self.start_time," burst_time: ",self.burst_time," counter: ",self.counter," completion_time: ",self.completion_time,\
               " turnaround_time: ",self.turnaround_time," waiting_time: ",self.waiting_time)
 

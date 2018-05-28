@@ -28,9 +28,10 @@ class RR(base.BaseScheduler):
     #Return:
     #   None
     #==============================================
-    def __init__(self, processQ, timerInterrupt):
-        super().__init__(processQ, timerInterrupt)
+    def __init__(self, processQ, quantum):
+        super().__init__(processQ, quantum)
         self.readyList = deque([])
+        self.quantum = quantum
 
     #==============================================
     #Checks to see if the queue is empty
@@ -83,3 +84,58 @@ class RR(base.BaseScheduler):
         elif curProc is not None and curProc.get_status() == COMPLETE:
             curProc = None
         return self.removeProcess()
+
+    # ==============================================
+    # This function actually runs the scheduler using
+    # the heuristics that's implemented in the
+    # getNext function
+    # Params:
+    #   None
+    # Return:
+    #   None
+    # ==============================================
+    def run(self):
+        #Checks if it's time to add a new process to simulation
+        def check_add_new_proc():
+            addProcTime = self.systemTime + 1
+            if len(self.processQ) > 0:
+                nextProc = self.processQ.popleft()
+                addProcTime = nextProc.get_startTime()
+                self.processQ.appendleft(nextProc)
+            if addProcTime <= self.systemTime:
+                proc = self.processQ.popleft()
+                print("NEW PROC:  ",proc.getPid()," at ",self.systemTime)
+                proc.set_arrivalTime(self.quantum)
+                self.addProcess(proc)
+
+        prevProc = None
+        curProc = None
+        while True:
+            # Check to see if scheduler is finished
+            if curProc is None and len(self.processQ) == 0 and self.empty():
+                print("FINISHED:  ",self.systemTime)
+                break
+
+            check_add_new_proc()
+            # Simulated kernel space execution
+            # Entered via timer interrupt or no user process running
+            if self.procTime == self.timerInterrupt or curProc is None or \
+                (curProc is not None and curProc.get_status() == COMPLETE):
+                print("EXEC:       0  at ", self.systemTime)
+                # Run the scheduler
+                # Impose extra time cost when switching to a new user process
+                curProc = self.getNext(curProc)
+                if prevProc != curProc and curProc is not None:
+                    self.systemTime += 1
+                    print("CTXT SWTCH:",curProc.getPid()," at ", self.systemTime)
+                    prevProc = curProc
+                self.procTime = 0
+
+            # Simulated user space execution
+            elif curProc is not None:
+                print("EXEC:      ",curProc.getPid()," at ", self.systemTime)
+                curProc.run(self.systemTime)
+                self.procTime += 1
+
+            # Increment simulated hardware counter
+            self.systemTime += 1

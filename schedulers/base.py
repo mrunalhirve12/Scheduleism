@@ -94,7 +94,7 @@ class BaseScheduler(ABC):
                 self.processQ.appendleft(nextProc)
             if addProcTime <= self.systemTime:
                 proc = self.processQ.popleft()
-                print("NEW PROC:  ",proc.getPid()," at ",self.systemTime)
+                print("NEW_PROC," + str(proc.getPid()) + "," + str(self.systemTime))
                 proc.set_arrivalTime(self.systemTime)
                 self.addProcess(proc)
 
@@ -103,7 +103,7 @@ class BaseScheduler(ABC):
         while True:
             # Check to see if scheduler is finished
             if curProc is None and len(self.processQ) == 0 and self.empty():
-                print("FINISHED:  ",self.systemTime)
+                print("FINISHED,," + str(self.systemTime))
                 break
 
             check_add_new_proc() 
@@ -111,19 +111,19 @@ class BaseScheduler(ABC):
             # Entered via timer interrupt or no user process running
             if self.procTime == self.timerInterrupt or curProc is None or \
                 (curProc is not None and curProc.get_status() == COMPLETE):
-                print("EXEC:       0  at ", self.systemTime)
+                print("EXEC,0," + str(self.systemTime))
                 # Run the scheduler
                 # Impose extra time cost when switching to a new user process
                 curProc = self.getNext(curProc)
                 if prevProc != curProc and curProc is not None:
                     self.systemTime += 1        
-                    print("CTXT SWTCH:",curProc.getPid()," at ", self.systemTime)
+                    print("CTXT_SWTCH," + str(curProc.getPid()) + "," + str(self.systemTime))
                     prevProc = curProc
                 self.procTime = 0
 
             # Simulated user space execution
             elif curProc is not None:
-                print("EXEC:      ",curProc.getPid()," at ", self.systemTime)
+                print("EXEC," + str(curProc.getPid()) + "," + str(self.systemTime))
                 curProc.run(self.systemTime)
                 self.procTime += 1
 

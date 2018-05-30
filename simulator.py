@@ -50,10 +50,10 @@ def generateProcess(num):
 #==============================================
 #This function starts the scheduler simulation.
 #The outputs of each of the scheuders are
-#written to a text file, specifically:
-#   FIFO = fifo.txt
-#   RR = rr.txt
-#   CFS = cfs.txt
+#written to a CSV file, specifically:
+#   FIFO = fifo.csv
+#   RR = rr.csv
+#   CFS = cfs.csv
 #Params:
 #   timerInterrupt = Allows scheduler to check
 #                    on running process and to
@@ -67,24 +67,25 @@ def start_simulation(timerInterrupt, processNum):
     #Generate random processes
     cfsQ = generateProcess(processNum)
 
-    #Set system output to fifo.txt for FIFO scheduler
-    sys.stdout = open('fifo.txt', 'w+')
+    #Set system output to fifo.csv for FIFO scheduler
+    sys.stdout = open('fifo.csv', 'w+')
+    print("status,pid,time")
     #Make deep copy of the process queue
     fifoQ = copy.deepcopy(cfsQ)
     #Initialize FIFO class object and run the scheduler
     fifo_sched = fifo.FIFO(fifoQ, timerInterrupt)
     fifo_sched.run()
 
-    #Set system output to rr.txt for RR scheduler
-    sys.stdout = open('rr.txt', 'w+')
+    #Set system output to rr.csv for RR scheduler
+    sys.stdout = open('rr.csv', 'w+')
     #Make deep copy of the process queue
     rrQ = copy.deepcopy(cfsQ)
     #Initialize RR class object and run the scheduler
     rr_sched = rr.RR(rrQ, timerInterrupt)
     rr_sched.run()
 
-    #Set system output to cfs.txt for CFS scheduler
-    sys.stdout = open('cfs.txt', 'w+')
+    #Set system output to cfs.csv for CFS scheduler
+    sys.stdout = open('cfs.csv', 'w+')
     #Initialize CFS class object and run the scheduler
     cfs_sched = cfs.CFS(cfsQ, timerInterrupt)
     cfs_sched.run()

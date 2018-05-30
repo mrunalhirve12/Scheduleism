@@ -64,7 +64,7 @@ class Process (object):
 
         self.counter += 1
         if self.counter == self.burst_time:
-            print("COMPLETED: ",self.getPid()," at ",sysTime)
+            print("COMPLETED," + str(self.getPid()) + "," + str(sysTime))
             self.status = COMPLETE
             self.completion_time = sysTime
             self.turnaround_time = self.completion_time - self.arrival_time

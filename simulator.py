@@ -2,16 +2,25 @@
 #====================================================================
 Process Simulator
 
-Execute: python3 simulator.py ['fifo','rr', 'cfs'] [timer interrupt value] [number of process to generate]
+Command Line: 
+    usage: simulator.py [-g] [-h] interrupt
+
+    Required Arguments:
+    interrupt         Timer Interrupt Value
+
+    Optional Arguments:
+    -g , --generate   Number of processes to generate for scheduler
+    -h, --help        Show this help message.
 #====================================================================
 """
-
 import sys
 import random
 import process
 from schedulers import fifo, round_robin as rr, cfs
 from collections import deque
 from defines import START_TIME_START, START_TIME_END, BURST_TIME_START, BURST_TIME_END
+import argparse
+import copy
 
 #==============================================
 #This function randomly generates a specified 
@@ -23,44 +32,96 @@ from defines import START_TIME_START, START_TIME_END, BURST_TIME_START, BURST_TI
 #   processQ = the deque of processes sorted by
 #              process start time
 #==============================================
-def generateProcess(num = 100):
+def generateProcess(num):
+    #Start the process queue as a list
     processQ = list()
     priorities = ["High", "Low"]
 
     #Create random processes
     for i in range(1, num + 1):
-        processQ.append(process.Process(i, 
-                                        random.choice(priorities), 
-                                        random.randint(BURST_TIME_START, BURST_TIME_END), 
-                                        random.randint(START_TIME_START, START_TIME_END)
-                                       ))
+        processQ.append(process.Process(i, random.choice(priorities), random.randint(BURST_TIME_START, BURST_TIME_END), random.randint(START_TIME_START, START_TIME_END)))
 
     #Sort the process queue by start time in ascending order
     processQ = sorted(processQ, key=lambda process: process.get_startTime())
-    
-    for p in processQ:
-        print(p)
-    
+
+    #Convert the sorted process list into a process queue before returning it
     return deque(processQ)
 
-def main():
-    #Get the timer interrupt from user
-    timerInterrupt = int(sys.argv[2])
-
+#==============================================
+#This function starts the scheduler simulation.
+#The outputs of each of the scheuders are
+#written to a text file, specifically:
+#   FIFO = fifo.txt
+#   RR = rr.txt
+#   CFS = cfs.txt
+#Params:
+#   timerInterrupt = Allows scheduler to check
+#                    on running process and to
+#                    make decisions
+#   processNum = the number of processes to 
+#                create. Default is 100
+#Return:
+#   None
+#==============================================
+def start_simulation(timerInterrupt, processNum):
     #Generate random processes
-    processQ = generateProcess(int(sys.argv[3]))
+    cfsQ = generateProcess(processNum)
 
-    if sys.argv[1].casefold() == "fifo".casefold():
-        print("SCHEDULER: FIFO")
-        scheduler = fifo.FIFO(processQ, timerInterrupt)
-    elif sys.argv[1].casefold() == "rr".casefold():
-        print("SCHEDULER: ROUND-ROBIN")
-        scheduler = rr.RR(processQ, timerInterrupt)
-    elif sys.argv[1].casefold() == "cfs".casefold():
-        print("SCHEDULER: CFS")
-        scheduler = cfs.CFS(processQ, timerInterrupt)
-    
-    scheduler.run()
+    #Set system output to fifo.txt for FIFO scheduler
+    sys.stdout = open('fifo.txt', 'w+')
+    #Make deep copy of the process queue
+    fifoQ = copy.deepcopy(cfsQ)
+    #Initialize FIFO class object and run the scheduler
+    fifo_sched = fifo.FIFO(fifoQ, timerInterrupt)
+    fifo_sched.run()
+
+    #Set system output to rr.txt for RR scheduler
+    sys.stdout = open('rr.txt', 'w+')
+    #Make deep copy of the process queue
+    rrQ = copy.deepcopy(cfsQ)
+    #Initialize RR class object and run the scheduler
+    rr_sched = rr.RR(rrQ, timerInterrupt)
+    rr_sched.run()
+
+    #Set system output to cfs.txt for CFS scheduler
+    sys.stdout = open('cfs.txt', 'w+')
+    #Initialize CFS class object and run the scheduler
+    cfs_sched = cfs.CFS(cfsQ, timerInterrupt)
+    cfs_sched.run()
+
+#==============================================
+#This function handles to command line argument
+#parsing for the simulation using argparse and
+#starts the simulation based on the input 
+#given.
+#Params:
+#   None
+#Return:
+#   None
+#==============================================
+def main():
+    #Initialize argparse object
+    parser = argparse.ArgumentParser(add_help=False)
+
+    #Custom titles for required and optional arguments
+    parser._positionals.title = 'Required Arguments'
+    parser._optionals.title = 'Optional Arguments'
+
+    #This argument is for specifying the timer interrup
+    parser.add_argument('interrupt', help="Timer Interrupt Value", type=int)
+
+    #This argument is for specifying the number of process to generate for the schedulers.
+    #The default value is 100 processes
+    parser.add_argument("-g", "--generate", metavar="", help="Number of processes to generate for scheduler", type=int, default=100)
+
+    #This argument is the custom help message
+    parser.add_argument('-h', '--help', action='help', default=argparse.SUPPRESS, help='Show this help message.')
+
+    #Get the values from the command line arguments
+    args = parser.parse_args()
+
+    #Start the simulation
+    start_simulation(args.interrupt, args.generate)
     
 if __name__ == "__main__":
     main()

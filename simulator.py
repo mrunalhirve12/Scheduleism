@@ -78,6 +78,7 @@ def start_simulation(timerInterrupt, processNum):
 
     #Set system output to rr.csv for RR scheduler
     sys.stdout = open('rr.csv', 'w+')
+    print("status,pid,time")
     #Make deep copy of the process queue
     rrQ = copy.deepcopy(cfsQ)
     #Initialize RR class object and run the scheduler
@@ -86,6 +87,7 @@ def start_simulation(timerInterrupt, processNum):
 
     #Set system output to cfs.csv for CFS scheduler
     sys.stdout = open('cfs.csv', 'w+')
+    print("status,pid,time")
     #Initialize CFS class object and run the scheduler
     cfs_sched = cfs.CFS(cfsQ, timerInterrupt)
     cfs_sched.run()

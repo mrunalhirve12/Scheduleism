@@ -64,7 +64,7 @@ class Process (object):
     #   string representation of process 
     #==============================================
     def __repr__(self):
-        return '{pid} {priority} {arrival} {start} {end} {burst} {turnaround} {wait}'.format(pid=self.pid, priority=self.priority, arrival=self.arrival_time, start=self.start_time, end=self.completion_time, burst=self.burst_time, wait=self.waiting_time, turnaround=self.turnaround_time)
+        return '{pid},{priority},{arrival},{start},{end},{burst},{turnaround},{wait},{response}'.format(pid=self.pid, priority=self.priority, arrival=self.arrival_time, start=self.start_time, end=self.completion_time, burst=self.burst_time, wait=self.waiting_time, turnaround=self.turnaround_time, response=self.start_time-self.arrival_time)
 
     #==============================================
     #Get the process identification number (pid)
@@ -209,18 +209,6 @@ class Process (object):
     #==============================================
     def get_completion_time(self):
         return self.completion_time
-
-    #==============================================
-    #Print the status of the process
-    #Params:
-    #   None
-    #Return:
-    #   None 
-    #==============================================
-    def print_status(self):
-        print("status: ",self.status," pid: ",self.pid," priority: ",self.priority," arrival_time: ",self.arrival_time,\
-              " start_time: ",self.start_time," burst_time: ",self.burst_time," counter: ",self.counter," completion_time: ",self.completion_time,\
-              " turnaround_time: ",self.turnaround_time," waiting_time: ",self.waiting_time)
 
     #==============================================
     #"Run" the process object by incrementing the

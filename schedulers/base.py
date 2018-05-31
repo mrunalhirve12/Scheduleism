@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+import sys
 import process
 from defines import COMPLETE
 from defines import INCOMPLETE
@@ -17,6 +18,7 @@ class BaseScheduler(ABC):
     #==============================================
     def __init__(self, processQ, timerInterrupt):
         self.processQ = processQ
+        self.completedQ = []
         self.timerInterrupt = timerInterrupt
         self.systemTime = 0
         self.procTime = 0
@@ -108,10 +110,15 @@ class BaseScheduler(ABC):
 
             check_add_new_proc() 
             # Simulated kernel space execution
-            # Entered via timer interrupt or no user process running
+            # Entered via timer interrupt, no user process running,
+            # or process has completed
             if self.procTime == self.timerInterrupt or curProc is None or \
                 (curProc is not None and curProc.get_status() == COMPLETE):
                 print("EXEC,0," + str(self.systemTime))
+                # Add completed proces to completedQ
+                if curProc is not None and curProc.get_status() == COMPLETE:
+                    self.completedQ.append(curProc)
+                    curProc = None
                 # Run the scheduler
                 # Impose extra time cost when switching to a new user process
                 curProc = self.getNext(curProc)
@@ -129,3 +136,9 @@ class BaseScheduler(ABC):
 
             # Increment simulated hardware counter
             self.systemTime += 1
+        newFile = str(self.__class__.__name__)+'_all.csv'
+        sys.stdout(newFile, 'w+')
+        print("pid,priority,arrival,start,end,burst,turnaround,wait,response")
+        # Dump all process info
+        for i in range (0,len(self.completedQ)):
+            print(self.completedQ[i])

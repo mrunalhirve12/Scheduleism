@@ -137,7 +137,7 @@ class BaseScheduler(ABC):
             # Increment simulated hardware counter
             self.systemTime += 1
         newFile = str(self.__class__.__name__)+'_all.csv'
-        sys.stdout(newFile, 'w+')
+        sys.stdout = open(newFile, 'w+')
         print("pid,priority,arrival,start,end,burst,turnaround,wait,response")
         # Dump all process info
         for i in range (0,len(self.completedQ)):

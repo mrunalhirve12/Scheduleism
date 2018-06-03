@@ -51,8 +51,8 @@ class CFS(base.BaseScheduler):
     #==============================================
     def __init__(self, processQ, timerInterrupt):
         super().__init__(processQ, timerInterrupt)
-        self.readyList = deque([])
-        self.time_minimum = 3
+        self.readyList = [] 
+        self.time_minimum = 5
         self.time_high = timerInterrupt
         self.time_low = math.floor(timerInterrupt / 2)
     
@@ -96,13 +96,14 @@ class CFS(base.BaseScheduler):
     #==============================================
     def removeProcess(self):
         vruntime = sys.maxsize
-        shift = 0
-        for i in range (0, len(self.readyList)):
-            if self.readyList[i].getProcessRuntime() < vruntime:
-                vruntime = self.readyList[i].getProcessRuntime()
-                shift = i
-        self.readyList.rotate(shift-1)
-        return self.readyListPop()
+        nextProc = None
+        for x in self.readyList:
+            if x.getProcessRuntime() < vruntime:
+                vruntime = x.getProcessRuntime()
+                nextProc = x
+        if nextProc is not None:
+            self.readyList.pop(self.readyList.index(nextProc))
+        return nextProc
   
     #==============================================
     #Get the next process for the scheduler to run.
@@ -123,6 +124,12 @@ class CFS(base.BaseScheduler):
             extraProc = 2
         # get the next process to run
         nextProc = self.removeProcess()
+    
+        #if no new process to add, then use current process
+        if nextProc is None and curProc is not None:
+            nextProc = curProc
+            curProc = None
+
         # calculate time new proc can run
         if nextProc is not None:
             time = 0

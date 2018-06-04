@@ -55,6 +55,8 @@ class CFS(base.BaseScheduler):
         self.time_minimum = 5
         self.time_high = timerInterrupt
         self.time_low = math.floor(timerInterrupt / 2)
+
+        self.last_time_run = {} #empty dictionary
     
     #==============================================
     #Checks to see if the tree is empty
@@ -77,6 +79,7 @@ class CFS(base.BaseScheduler):
     def addProcess(self, process):
         if process is not None:
             self.readyList.append(process)
+            self.last_time_run[str(process.getPid())] = self.systemTime
 
 
     def readyListPop(self):
@@ -132,19 +135,18 @@ class CFS(base.BaseScheduler):
 
         # calculate time new proc can run
         if nextProc is not None:
-            time = 0
+            time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
+            print("nextProc=",nextProc.getPid()," last run=:",self.last_time_run[str(nextProc.getPid())]," num_proc=",len(self.readyList)+extraProc)
             # set interrupt using this time
-            if nextProc.getPriority() == "High":
-                time = self.time_high /(len(self.readyList)+extraProc)
-            else:
-                time = self.time_low /(len(self.readyList)+extraProc)
+            time = time / (len(self.readyList)+extraProc)
 
             if time < self.time_minimum:
                 self.timerInterrupt = self.time_minimum
             else:
                 self.timerInterrupt = math.floor(time)
-
+            print("slice=",math.floor(time))
         if curProc is not None and curProc.get_status() != COMPLETE:
             self.readyList.append(curProc)
+            self.last_time_run[str(curProc.getPid())] = self.systemTime
         return nextProc
 

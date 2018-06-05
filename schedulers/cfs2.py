@@ -133,12 +133,9 @@ class CFS(base.BaseScheduler):
 
         # calculate time new proc can run
         if nextProc is not None:
-
-#            time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
+            time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
             # set interrupt using this time
-#            time = math.ceil(time / (len(self.readyList)+extraProc))
-
-            time = math.ceil(self.target_bound / (len(self.readyList)+extraProc))
+            self.timerInterrupt = math.ceil(time / (len(self.readyList)+extraProc))
 
         if curProc is not None and curProc.get_status() != COMPLETE:
             self.readyList.append(curProc)

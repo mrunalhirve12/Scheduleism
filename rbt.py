@@ -1,6 +1,6 @@
 from collections import deque
-from operator import attrgetter
 import copy
+
 """
 A classic (not left-leaning) Red-Black Tree implementation, supporting addition and deletion.
 """

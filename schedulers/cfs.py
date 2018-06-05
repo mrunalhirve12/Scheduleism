@@ -85,9 +85,7 @@ class CFS(base.BaseScheduler):
     #   removeProcess()
     #==============================================
     def getNext(self, curProc):
-        print("\t\t\tproc count=",self.readyTree.getProcessesCount())
         if curProc is not None and curProc.get_status() == INCOMPLETE:
-            print("\t\t\taddProcess() called")
             self.addProcess(curProc)
         elif curProc is not None and curProc.get_status() == COMPLETE:
             curProc = None
@@ -97,8 +95,5 @@ class CFS(base.BaseScheduler):
         if processCount > 0:
             self.timerInterrupt = math.ceil(self.targetBound / processCount)
         
-        print("\t\t\tproc count=",self.readyTree.getProcessesCount())
         nextProc = self.removeProcess()
-        print("\t\t\tremoveProcess() called")
-        print("\t\t\tproc count=",self.readyTree.getProcessesCount())
         return nextProc

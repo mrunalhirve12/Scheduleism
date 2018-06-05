@@ -3,6 +3,7 @@ from schedulers import base
 from defines import COMPLETE
 from defines import INCOMPLETE
 from rbt import RedBlackTree
+import math
 
 """
 #==================================================
@@ -91,6 +92,6 @@ class CFS(base.BaseScheduler):
         
         processCount = self.readyTree.getProcessesCount()
         if processCount > 0:
-            self.timerInterrupt = self.targetBound / processCount
+            self.timerInterrupt = math.ceil(self.targetBound / processCount)
             
         return self.removeProcess()

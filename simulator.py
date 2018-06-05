@@ -16,7 +16,7 @@ Command Line:
 import sys
 import random
 import process
-from schedulers import fifo, round_robin as rr, cfs
+from schedulers import fifo, round_robin as rr, cfs, cfs2
 from collections import deque
 from defines import START_TIME_START, START_TIME_END, BURST_TIME_START, BURST_TIME_END
 import argparse

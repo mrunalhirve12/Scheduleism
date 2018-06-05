@@ -133,15 +133,13 @@ class CFS(base.BaseScheduler):
 
         # calculate time new proc can run
         if nextProc is not None:
-            time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
-            # set interrupt using this time
-            time = time / (len(self.readyList)+extraProc)
 
-            if time < self.time_minimum:
-                self.timerInterrupt = self.time_minimum
-            else:
-                self.timerInterrupt = math.floor(time)
-            print("slice=",math.floor(time))
+#            time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
+            # set interrupt using this time
+#            time = math.ceil(time / (len(self.readyList)+extraProc))
+
+            time = math.ceil(self.target_bound / (len(self.readyList)+extraProc))
+
         if curProc is not None and curProc.get_status() != COMPLETE:
             self.readyList.append(curProc)
             self.last_time_run[str(curProc.getPid())] = self.systemTime

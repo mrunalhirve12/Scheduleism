@@ -1,5 +1,6 @@
 from collections import deque
-
+from operator import attrgetter
+import copy
 """
 A classic (not left-leaning) Red-Black Tree implementation, supporting addition and deletion.
 """
@@ -92,7 +93,7 @@ class Node:
     #   processes in the queue or not
     #=======================================
     def isQueueEmpty(self) -> bool:
-        if self.queue:
+        if len(self.queue) > 0:
             return False
         else:
             return True
@@ -168,6 +169,7 @@ class RedBlackTree:
                 # then, remove the successor
                 successor = self._find_in_order_successor(node_to_remove)
                 node_to_remove.time = successor.time  # switch the time
+                node_to_remove.queue = copy.deepcopy(successor.queue)
                 node_to_remove = successor
 
             # has 0 or 1 children!
@@ -267,6 +269,7 @@ class RedBlackTree:
                 Since we're a node with one child only, we can be sure that there are no nodes below the red child.
                 """
                 node.time = not_nil_child.time
+                node.queue = copy.deepcopy(not_nil_child.queue)
                 node.left = not_nil_child.left
                 node.right = not_nil_child.right
             else:  # BLACK child
@@ -626,35 +629,15 @@ class RedBlackTree:
     #Params:
     #   None
     #Return:
-    #   node = node with smallest execution
-    #          time
+    #   node with smallest execution time
     #   OR
     #   None
     #=======================================
     def getMinimum(self):
-        #No root, so there's no nodes in tree
-        if self.root is None: 
+        nodeList = list(self.__iter__())
+        if len(nodeList) == 0:
             return None
-
-        #Inner function to find node with smallest execution time
-        def find_floor(node):
-            #If node is leaf, return None
-            if node == self.NIL_LEAF:
-                return None
-            
-            #If the left node is a leaf, return the current node
-            if node.left == self.NIL_LEAF:
-                return node
-            
-            #Otherwise, traverse the left side of the tree
-            elif node.left != self.NIL_LEAF:
-                return find_floor(node.left)
-            
-            #Traverse the right side of the tree
-            else:
-                return find_floor(node.right)
-
-        return find_floor(self.root)
+        return self.find_node(min(nodeList))
 
     #=======================================
     #Get next process to run that has the 
@@ -676,7 +659,7 @@ class RedBlackTree:
             process = node.getProcess()
 
             #If the result of the pop causes the queue to be empty, remove it from the tree
-            if node.isQueueEmpty():
+            if node.isQueueEmpty() == True:
                 self.remove(node.time)
             
             #Return the process
@@ -685,7 +668,7 @@ class RedBlackTree:
             return None
 
     #=======================================
-    #Get the totaln number of processes in
+    #Get the total number of processes in
     #tree
     #Params:
     #   None

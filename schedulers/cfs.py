@@ -93,8 +93,10 @@ class CFS(base.BaseScheduler):
             curProc = None
         
         processCount = self.readyTree.getProcessesCount()
+       
         if processCount > 0:
             self.timerInterrupt = math.ceil(self.targetBound / processCount)
+        
         print("\t\t\tproc count=",self.readyTree.getProcessesCount())
         nextProc = self.removeProcess()
         print("\t\t\tremoveProcess() called")

@@ -16,25 +16,31 @@ rbt.addProcess(Process4)
 rbt.addProcess(Process5)
 rbt.addProcess(Process6)
 
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 print("Number of Nodes: " + str(rbt.count))
 
 process = rbt.getProcess()
 print("First Process to Run: " + process.__repr__())
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 
 process = rbt.getProcess()
 print("Second Process to Run: " + process.__repr__())
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 
 process = rbt.getProcess()
 print("Third Process to Run: " + process.__repr__())
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 
 process = rbt.getProcess()
 print("Fourth Process to Run: " + process.__repr__())
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 
 process = rbt.getProcess()
 print("Fifth Process to Run: " + process.__repr__())
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 
 process = rbt.getProcess()
 print("Sixth Process to Run: " + process.__repr__())
+print("Number of Processes: " + str(rbt.getProcessesCount()))
 
 print("Number of Nodes: " + str(rbt.count))
-

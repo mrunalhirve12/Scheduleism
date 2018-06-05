@@ -107,6 +107,16 @@ class Node:
     #=======================================
     def printQueue(self):
         print(list(self.queue))
+    
+    #=======================================
+    #Return the number of processes in queue
+    #Params:
+    #   None
+    #Return:
+    #   Number of processes in queue
+    #=======================================
+    def countProcesses(self):
+        return len(self.queue)
 
 class RedBlackTree:
     # every node has null nodes as children initially, create one such object for easy management
@@ -673,6 +683,23 @@ class RedBlackTree:
             return process
         else:
             return None
+
+    #=======================================
+    #Get the totaln number of processes in
+    #tree
+    #Params:
+    #   None
+    #Return:
+    #   count = total number of processes
+    #=======================================
+    def getProcessesCount(self):
+        nodesList = self.__iter__()
+        count = 0
+        for n in nodesList:
+            node = self.find_node(n)
+            count += node.countProcesses()
+
+        return count
 
     #=======================================
     #Display the red black tree. For testing

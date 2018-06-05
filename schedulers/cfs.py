@@ -38,6 +38,7 @@ class CFS(base.BaseScheduler):
     #==============================================
     def __init__(self, processQ, timerInterrupt):
         super().__init__(processQ, timerInterrupt)
+        self.targetBound = timerInterrupt
         self.readyTree = RedBlackTree()
     
     #==============================================
@@ -87,4 +88,9 @@ class CFS(base.BaseScheduler):
             self.addProcess(curProc)
         elif curProc is not None and curProc.get_status() == COMPLETE:
             curProc = None
+        
+        processCount = self.readyTree.getProcessesCount()
+        if processCount > 0:
+            self.timerInterrupt = self.targetBound / processCount
+            
         return self.removeProcess()

@@ -52,9 +52,7 @@ class CFS(base.BaseScheduler):
     def __init__(self, processQ, timerInterrupt):
         super().__init__(processQ, timerInterrupt)
         self.readyList = [] 
-        self.time_minimum = 5
-        self.time_high = timerInterrupt
-        self.time_low = math.floor(timerInterrupt / 2)
+        self.target_bound = timerInterrupt
 
         self.last_time_run = {} #empty dictionary
     
@@ -136,7 +134,6 @@ class CFS(base.BaseScheduler):
         # calculate time new proc can run
         if nextProc is not None:
             time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
-            print("nextProc=",nextProc.getPid()," last run=:",self.last_time_run[str(nextProc.getPid())]," num_proc=",len(self.readyList)+extraProc)
             # set interrupt using this time
             time = time / (len(self.readyList)+extraProc)
 

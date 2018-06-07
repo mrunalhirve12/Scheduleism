@@ -88,9 +88,18 @@ def start_simulation(timerInterrupt, processNum):
     #Set system output to cfs.csv for CFS scheduler
     sys.stdout = open('cfs.csv', 'w+')
     print("status,pid,time")
+    #Make deep copy of the process queue
+    cfs2Q = copy.deepcopy(cfsQ)
     #Initialize CFS class object and run the scheduler
     cfs_sched = cfs.CFS(cfsQ, timerInterrupt)
     cfs_sched.run()
+
+    #Set system output to cfs2.csv for CFS2 scheduler
+    sys.stdout = open('cfs2.csv', 'w+')
+    print("status,pid,time")
+    #Initialize CFS class object and run the scheduler
+    cfs2_sched = cfs2.CFS2(cfs2Q, timerInterrupt)
+    cfs2_sched.run()
 
 #==============================================
 #This function handles to command line argument

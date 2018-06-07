@@ -15,9 +15,9 @@ def buildPlot(dataframe, procDict, title):
 	for index, row in dataframe.iterrows():
 		if not row['pid'] == 0:
 			p = procDict.get(row['pid'])
-			plotter.plot(row['pid'], row['time'], color = p, marker= 'o', linewidth = '3')
-	plotter.ylabel('time')
-	plotter.xlabel('Processes')
+			plotter.plot(row['time'], row['pid'], color = p, marker= 'o', linewidth = '3')
+	plotter.ylabel('processes')
+	plotter.xlabel('time')
 	plotter.title(title)
 	plotter.show()
 
@@ -30,7 +30,8 @@ def scheduler_plot(sched, title):
 def main():
         scheduler_plot('../fifo.csv', 'FIFO')
         scheduler_plot('../rr.csv', 'Round-Robin')
-        scheduler_plot('../cfs.csv', 'CFS')
+        scheduler_plot('../cfs.csv', 'CFS #1')
+        scheduler_plot('../cfs2.csv', 'CFS #2')
 
 if __name__ == '__main__':
 	main()

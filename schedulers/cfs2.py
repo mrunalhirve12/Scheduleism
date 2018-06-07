@@ -20,25 +20,24 @@ Each time an interrupt occurs, a new process is
 retrieved from the ready list having the lowest 
 runtime.
 
-Additionally, it utilizes priority levels for a 
-process to determine how long the next process will
-run before an interrupt is encountered. To determine
-the amount of time a process will run, first a
-bounded taret amount is found based on its priority.
-Then that amount is divided by the total number of
-runnable tasks.
+The idea is to give a process time to execute commensurate
+with the amount of time it would have been running on an
+ideal processor since it last executed. An ideal processor being 
+one that allows all processes to run concurrently, dividing CPU 
+power evenly. Consequently, when a process is chosen to run, it 
+runs for the time it woud have run on that ideal processor
+with the other processes concurrently.
 
-process runtime = priority weight / size of readyList
+process runtime = time waiting to run / # runnable processes
 
 Once this is found, the simulator interrupt value is
-changed, guaranteeing the process will not run for
-too long.
+changed, guaranteeing the process will not run beyond its
+fair share.
 
-https://tampub.uta.fi/bitstream/handle/10024/96864/GRADU-1428493916.pdf
 #====================================================
 """
 
-class CFS(base.BaseScheduler):
+class CFS2(base.BaseScheduler):
     #==============================================
     #Intialize the red black tree for CFS
     #Params:
@@ -120,23 +119,23 @@ class CFS(base.BaseScheduler):
     #   removeProcess()
     #==============================================
     def getNext(self, curProc):
+        #Later calculation needs to accound for processes not
+        #on the readyList (nextProc and possibly curProc)
         extraProc = 1
         if curProc is not None:
             extraProc = 2
-        # get the next process to run
+        #Get the next process to run
         nextProc = self.removeProcess()
-    
-        #if no new process to add, then use current process
+        #If no new process to add, then use current process
         if nextProc is None and curProc is not None:
             nextProc = curProc
             curProc = None
-
-        # calculate time new proc can run
+        #Calculate time new proc can run
         if nextProc is not None:
             time = self.systemTime - self.last_time_run[str(nextProc.getPid())]
-            # set interrupt using this time
+            #Set interrupt using this time
             self.timerInterrupt = math.ceil(time / (len(self.readyList)+extraProc))
-
+        #Add current process back into readyList
         if curProc is not None and curProc.get_status() != COMPLETE:
             self.readyList.append(curProc)
             self.last_time_run[str(curProc.getPid())] = self.systemTime

@@ -7,15 +7,13 @@ from simulator import start_simulation
 app = Flask(__name__)
 #=====================================================
 
-
 #====================Home Route=======================
 @app.route("/")
 def home():
     return render_template('home.html')
 #=====================================================
 
-
-#================Submit Review========================
+#================Submit Inputs========================
 @app.route("/simulate", methods=['POST'])
 def simulate():
     try:
@@ -25,10 +23,9 @@ def simulate():
         print("Error encountered: " + str(e)) 
 #=====================================================
 
-
 #=================Start Server========================
 app.debug = True
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(host='localhost', port=8080)
 #=====================================================
 

@@ -1,9 +1,11 @@
+import matplotlib
 import matplotlib.pyplot as plotter
 from pprint import pprint
 import pandas as pd
 import itertools
 
 colors = itertools.cycle(5 * ["red", "green", "cyan", "blue", "black"])
+
 
 def generateProcTable(processes):
 	proc = dict()
@@ -16,10 +18,11 @@ def buildPlot(dataframe, procDict, title):
 		if not row['pid'] == 0:
 			p = procDict.get(row['pid'])
 			plotter.plot(row['time'], row['pid'], color = p, marker= 'o', linewidth = '3')
-	plotter.ylabel('processes')
-	plotter.xlabel('time')
+	plotter.ylabel('Processes')
+	plotter.xlabel('Time')
 	plotter.title(title)
-	plotter.show()
+	#plotter.show()
+	plotter.savefig(title + ".png", bbox_inches='tight')
 
 def scheduler_plot(sched, title):
 	scheduler = pd.read_csv(sched)

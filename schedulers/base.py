@@ -105,7 +105,7 @@ class BaseScheduler(ABC):
         while True:
             # Check to see if scheduler is finished
             if curProc is None and len(self.processQ) == 0 and self.empty():
-                print("FINISHED,," + str(self.systemTime))
+                print("FINISHED,0," + str(self.systemTime))
                 break
 
             check_add_new_proc() 

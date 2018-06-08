@@ -12,6 +12,7 @@ def generateProcTable(processes):
 	return proc
 
 def buildPlot(dataframe, procDict, title):
+	figure = plotter.figure(figsize=(6,6))
 	for index, row in dataframe.iterrows():
 		if not row['pid'] == 0:
 			p = procDict.get(row['pid'])
@@ -19,7 +20,8 @@ def buildPlot(dataframe, procDict, title):
 	plotter.ylabel('processes')
 	plotter.xlabel('time')
 	plotter.title(title)
-	plotter.show()
+	#plotter.show()
+	figure.savefig(title+'.png',dpi=80,facecolor='0.75',edgecolor='white')
 
 def scheduler_plot(sched, title):
 	scheduler = pd.read_csv(sched)

@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+	<h3 class="text-center">Simulator Inputs</h3>
+  <form id="simInputs" method="POST" action="/simulate">
+		<div class="form-group row">
+			<label for="timer" class="col-sm-2 col-form-label">Timer Interrupt</label>
+			<div class="col-sm-10">
+			  <input type="number" class="form-control" name="timer" id="timer" value="1" min="1">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="processnum" class="col-sm-2 col-form-label">Number of Processes</label>
+			<div class="col-sm-10">
+			  <input type="number" class="form-control" name="processNum" id="processNum" value="1" min="1">
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="col-sm-10">
+			  <button type="submit" class="btn btn-primary" id="startSim">Simulate</button>
+			</div>
+		</div>
+	</form>
+
+	<div id="progress" style="display:none">
+		<i class="fas fa-spinner fa-spin"></i> Simulation in Progress...
+	</div>
+
+	<script>
+		$("#startSim").click(function(){
+			$("#startSim").prop("disabled", true);
+			$("#progress").show();
+			$("#simInputs").submit();
+		});
+	</script>
+
+{% endblock %}
+

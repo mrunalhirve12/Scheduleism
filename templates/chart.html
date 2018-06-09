@@ -3,6 +3,17 @@
 {% block body %}
     <h1 class="text-center">Simulation Results</h1>
     <div class="text-center">
+        <img src="{{url_for('static', filename='FIFO_all.png')}}" class="img-fluid"/>
+        <img src="{{url_for('static', filename='Round-Robin_all.png')}}" class="img-fluid"/>
+    </div>
+    <br>
+    <div class="text-center">
+        <img src="{{url_for('static', filename='CFS_1_all.png')}}" class="img-fluid"/>
+        <img src="{{url_for('static', filename='CFS_2_all.png')}}" class="img-fluid"/>
+    </div>
+    <br>
+    <br>
+    <div class="text-center">
         <img src="{{url_for('static', filename='FIFO.png')}}" class="img-fluid"/>
         <img src="{{url_for('static', filename='Round-Robin.png')}}" class="img-fluid"/>
     </div>

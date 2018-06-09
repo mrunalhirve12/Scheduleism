@@ -101,6 +101,8 @@ def start_simulation(timerInterrupt, processNum):
     cfs2_sched = cfs2.CFS2(cfs2Q, timerInterrupt)
     cfs2_sched.run()
 
+    sys.stdout = sys.__stdout__
+    
 #==============================================
 #This function handles to command line argument
 #parsing for the simulation using argparse and

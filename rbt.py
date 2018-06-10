@@ -3,6 +3,9 @@ import copy
 
 """
 A classic (not left-leaning) Red-Black Tree implementation, supporting addition and deletion.
+Code from: https://github.com/Enether/Red-Black-Tree
+
+Got permission from author on modifying and using this code
 """
 
 # The possible Node colors

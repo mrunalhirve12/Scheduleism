@@ -39,7 +39,9 @@ def generateProcess(num):
 
     #Create random processes
     for i in range(1, num + 1):
-        processQ.append(process.Process(i, random.choice(priorities), random.randint(BURST_TIME_START, BURST_TIME_END), random.randint(START_TIME_START, START_TIME_END)))
+        processQ.append(process.Process(i, random.choice(priorities), 
+                                           random.randint(BURST_TIME_START, BURST_TIME_END), 
+                                           random.randint(START_TIME_START, START_TIME_END)))
 
     #Sort the process queue by start time in ascending order
     processQ = sorted(processQ, key=lambda process: process.get_startTime())

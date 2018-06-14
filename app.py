@@ -1,3 +1,8 @@
+"""
+    This script runs the Python Flask web application
+    of the simulator. Please see the README for detailed
+    instructions.
+"""
 #======================Imports========================
 from flask import Flask, render_template, request, redirect, url_for
 from simulator import start_simulation
@@ -38,8 +43,11 @@ def chart():
 @app.route("/simulate", methods=['POST'])
 def simulate():
     try:
+        #Start simulation
         start_simulation(int(request.form["timer"]), int(request.form["processNum"]))
+        #Generate graphs from raw data
         main()
+        #Direct to the chart page
         return redirect(url_for('chart'))
     except Exception as e:
         print("Error encountered: " + str(e)) 
@@ -50,4 +58,3 @@ app.debug = True
 if __name__ == '__main__':
     app.run(host='localhost', port=8000)
 #=====================================================
-

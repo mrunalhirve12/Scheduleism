@@ -21,7 +21,7 @@ from collections import deque
 from defines import START_TIME_START, START_TIME_END, BURST_TIME_START, BURST_TIME_END
 import argparse
 import copy
-
+from utils.procPlot import main as mn
 #==============================================
 #This function randomly generates a specified 
 #number of processes
@@ -138,6 +138,9 @@ def main():
 
     #Start the simulation
     start_simulation(args.interrupt, args.generate)
+    
+    #Process data and generate graphs in the static folder
+    mn()
     
 if __name__ == "__main__":
     main()

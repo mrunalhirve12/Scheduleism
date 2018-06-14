@@ -39,7 +39,7 @@ fair share.
 
 class CFS2(base.BaseScheduler):
     #==============================================
-    #Intialize the red black tree for CFS
+    #Intialize the deque and dictionary for CFS 2
     #Params:
     #   processQ = Deque of processes to run
     #   timerInterrupt = Allows scheduler to check
@@ -77,13 +77,6 @@ class CFS2(base.BaseScheduler):
         if process is not None:
             self.readyList.append(process)
             self.last_time_run[str(process.getPid())] = self.systemTime
-
-
-    def readyListPop(self):
-        try:
-            return self.readyList.pop()
-        except IndexError:
-            return None
 
     #==============================================
     #Get the next process to run from the list with

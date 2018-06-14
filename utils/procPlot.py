@@ -1,3 +1,7 @@
+"""
+	This file handles the data processing of the CSV files
+	and graph generation.  
+"""
 import matplotlib
 matplotlib.use("AGG")
 
@@ -11,13 +15,31 @@ from collections import OrderedDict
 
 colors = itertools.cycle(5 * ["red", "green", "cyan", "blue", "black"])
 
-
+#==============================================
+#Generate process table with mapping to colors
+#Params:
+#   processes = Map colors to individual
+#				process for graphing
+#Return:
+#   proc = proc table 
+#==============================================
 def generateProcTable(processes):
 	proc = dict()
 	for process in processes:
 		proc[process] = next(colors)
 	return proc
 
+#==============================================
+#Generate a graph and save it to static folder
+#Params:
+#   dataframe = object from read_csv function
+#				call
+#	procDict = The process dictionary from the
+#			   generateProcTable
+#	title = title of the graph file
+#Return:
+#   None 
+#==============================================
 def buildPlot(dataframe, procDict, title):
 	figure = plotter.figure(figsize=(6,6))
 	for index, row in dataframe.iterrows():
@@ -30,12 +52,32 @@ def buildPlot(dataframe, procDict, title):
 	plotter.title(title)
 	figure.savefig("static/" + title + ".png",dpi=80,facecolor='0.75',edgecolor='white')
 
+#==============================================
+#Generate a graph of the processes run time for
+#a scheduler
+#Params:
+#   sched = name of the scheduler
+#	title = name of the graph file
+#Return:
+#   None 
+#==============================================
 def scheduler_plot(sched, title):
 	scheduler = pd.read_csv(sched)
 	processes = scheduler.pid.unique()
 	proc = generateProcTable(processes)
 	buildPlot(scheduler, proc, title)
 
+#==============================================
+#Create and generate an average times graph for
+#all of the schedulers. These graphs have an 
+#post of _all.png in the name. It utilizes an 
+#inner function that generates and saves the 
+#plot
+#Params:
+#   None
+#Return:
+#   None
+#==============================================
 def average():
 	def averagePlot(d, title):
 		X = arange(len(d))
@@ -104,6 +146,13 @@ def average():
 			cfs2['Response Time'] = mean(responseTimes)
 			averagePlot(cfs2, 'CFS_2')
 
+#==============================================
+#Main function
+#Params:
+#   None
+#Return:
+#   None
+#==============================================
 def main():
 	scheduler_plot('fifo.csv', 'FIFO')
 	scheduler_plot('rr.csv', 'Round-Robin')

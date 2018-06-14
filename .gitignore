@@ -1,5 +1,12 @@
 __pycache__/
 *.pyc
-*.csv
+CFS2_all.csv
+cfs2.csv
+CFS_all.csv
+cfs.csv
+FIFO_all.csv
+fifo.csv
+RR_all.csv
+rr.csv
 *.zip
 *.png

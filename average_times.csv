@@ -1,0 +1,4 @@
+,FIFO,Round-Robin,CFS 1,CFS 2
+Wait Time,560,862,1365,956
+Turnaround Time,686.8,988.7,1492.3,1083.2
+Response Time,554.8,81.2,10.6,5.4
